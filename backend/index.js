@@ -20,7 +20,7 @@ const mykeyForToken = 'ak@1234';
 
 
 
-app.get('/', checkToken, checkIsAdmin, (req, res) => {
+app.get('/', checkToken, (req, res) => {
     console.log('Working');
     const someData = 'some Data From Backend'
     return res.status(200).json({ someData })
@@ -78,7 +78,12 @@ app.post('/login', async (req, res) => {
 
 
 app.get('/me', checkToken, async (req, res) => {
-    const user = await User.findById(req.user.userId)
+    const user = await User.findById(req.user.userId).select('-password')
     return res.status(200).json({ user })
+})
+
+app.get('/logout', checkToken, async (req, res) => {
+    res.clearCookie('token')
+    return res.status(200).json({ msg: 'Logout successfully' })
 })
 app.listen(3000)
