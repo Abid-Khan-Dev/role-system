@@ -6,6 +6,8 @@ import jwt from 'jsonwebtoken'
 import checkToken from './middlewares/checkToken.js';
 import cors from 'cors'
 import checkIsAdmin from './middlewares/checkIsAdmin.js'
+import checkRole from './middlewares/checkRole.js'
+
 
 const app = express()
 
@@ -20,7 +22,7 @@ const mykeyForToken = 'ak@1234';
 
 
 
-app.get('/', checkToken, (req, res) => {
+app.get('/', checkToken, checkRole('admin', 'user'), (req, res) => {
     console.log('Working');
     const someData = 'some Data From Backend'
     return res.status(200).json({ someData })
