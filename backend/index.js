@@ -22,26 +22,26 @@ const mykeyForToken = 'ak@1234';
 
 
 
-app.get('/', checkToken, checkRole('admin', 'user'), (req, res) => {
+app.get('/', checkToken, checkRole('sdfds'), (req, res) => {
     console.log('Working');
     const someData = 'some Data From Backend'
-    return res.status(200).json({ someData })
+    return res.status(200).json({ a: someData })
 })
 
 app.post('/signup', async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password } = req.body;
         console.log(req.body);
 
-        if (!name || !email || !password || !role) {
+        if (!name || !email || !password) {
             return res.status(400).json({ msg: 'All fields are Required' })
         }
 
-        const existingUser = await User.findOne({ email });
-        if (existingUser) return res.status(400).json({ msg: 'User is found.' })
+        const existingUser = await User.findOne({ role: "admin" });
+        if (existingUser) return res.status(400).json({ msg: 'admin is found.' })
 
         const newUser = await User.create({
-            name, email, password, role
+            name, email, password, role: 'admin'
         })
         const token = jwt.sign({ userId: newUser._id, role: newUser.role }, mykeyForToken)
         res.cookie('token', token, {
@@ -53,6 +53,8 @@ app.post('/signup', async (req, res) => {
         return res.status(500).json(error.message)
     }
 })
+
+
 
 
 app.post('/login', async (req, res) => {
@@ -84,6 +86,49 @@ app.get('/me', checkToken, async (req, res) => {
     return res.status(200).json({ user })
 })
 
+app.get('/users', async (req, res) => {
+    try {
+        const users = await User.find();
+        // filter the admin from users means we can't send the admin
+        return res.json({ users })
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+})
+app.post('/users', async (req, res) => {
+    try {
+        const { name, email, role } = req.body;
+        // if (role === '') role = 'staff'
+        const newUser = await User.create({ name, email, role });
+        return res.status(200).json({ user: newUser })
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+})
+app.get('/users/:id', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        return res.json({ user })
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+})
+app.put('/users/:id', async (req, res) => {
+    try {
+        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        return res.json({ user })
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+})
+app.delete('/users/:id', async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.params.id);
+        return res.json({ user })
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+})
 app.get('/logout', checkToken, async (req, res) => {
     res.clearCookie('token')
     return res.status(200).json({ msg: 'Logout successfully' })

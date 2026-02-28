@@ -32,13 +32,13 @@ function Signup() {
                         <label htmlFor="password" className='block font-medium text-sm text-gray-700 mb-1'>Password</label>
                         <input type="password" id='password' className='w-full px-4 py-2  bg-gray-200 outline-0 focus:ring focus:ring-blue-600 border border-gray-300 shadow rounded-xl' name='password' value={form.password} onChange={handleChange} />
                     </div>
-                    <div>
+                    {/* <div>
                         <label htmlFor="password" className='block font-medium text-sm text-gray-700 mb-1'>Password</label>
                         <select name="role" onChange={handleChange} value={form.role} className='w-full px-4 py-2  bg-gray-200 outline-0 focus:ring focus:ring-blue-600 border border-gray-300 shadow rounded-xl'>
                             <option value="user">User</option>
                             <option value="admin">Admin</option>
                         </select>
-                    </div>
+                    </div> */}
                     <button className='px-4 py-2 w-full bg-gradient-to-r from-blue-400 to-blue-600 hover:via-blue-800 text-white font-semibold rounded-xl '>Submit</button>
                 </form>
             </div>
